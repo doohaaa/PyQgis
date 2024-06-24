@@ -1,0 +1,66 @@
+from qgis.utils import iface
+from PyQt5.QtCore import QVariant
+
+
+_NAME_FIELD = 'GRID_1K_CD'
+_MIN_ID_FIELD = 'min_id'
+# Names of the new fields to be added to the layer
+_NEW_NEIGHBORS_FIELD = 'neighbors_'
+_ID_FIELD = 'id'
+_FLAG_FIELD = 'flag'
+
+layer = iface.activeLayer()
+
+layer.startEditing()
+
+# Create a dictionary of all features
+feature_dict = {f.id(): f for f in layer.getFeatures()}
+
+my_list_a=[]
+my_list_b=[]
+my_list=[]
+
+
+
+
+for a in feature_dict.values():
+    for b in feature_dict.values():
+        print ('Working on %s and %s' % (a[_NAME_FIELD], b[_NAME_FIELD]))
+    # Initalize neighbors list and sum
+        neighbors = []
+        
+        if (a[_ID_FIELD] != b[_ID_FIELD]):  ##비교 대상이 자신이 아니고
+            if (a.attributes()[14] == 0 and b.attributes()[14] == 0 ):  ##통합 되지 않은 격자 중 
+                my_list_a = str(a.attributes()[17]) 
+                my_list_a = my_list_a.split(',')
+                print("My list : %s" %my_list_a)
+                for i in range(len(my_list_a)):  ##a의 neighbors_를 돌면서 
+                    number=my_list_a[i]  ##a의 i번째 이웃
+                    my_list_b = str(b.attributes()[17])
+                    my_list_b = my_list_b.split(',')
+                    
+                    if((number in my_list_b) and (a[_FLAG_FIELD] == 0 )and (b[_FLAG_FIELD] == 0)): ##만약 b의 neighbors_ 중에 a의 원소가 있고, flag==0 이라면 
+                        print("common number is %s" %number)
+                        print("My list b : %s " %b.attributes()[17])
+                        my_list_b = b.attributes()[17].split(',')
+                        my_list_a = a.attributes()[17].split(',')
+                        ##print(my_list_a)
+                        ##print(my_list_b)
+                        my_list= my_list_a + my_list_b
+                        ##
+                        print(my_list)
+                        new_list=[]
+                        for v in my_list:
+                            if v not in new_list:
+                                new_list.append(v)
+                        print("%s 의 new list : %s" %(b[_NAME_FIELD], new_list))
+                        a[_FLAG_FIELD] = 1
+                        ##b[_NEW_NEIGHBORS_FIELD] = new_list
+                        b[_NEW_NEIGHBORS_FIELD]=','.join(map(str,new_list))
+                        layer.updateFeature(a)
+                        layer.updateFeature(b)
+
+    print(" ")
+
+##layer.commitChanges()
+print ('Processing complete.')

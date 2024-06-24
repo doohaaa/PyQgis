@@ -1,0 +1,6 @@
+#file path
+my_file = 'file path'
+
+#import layer
+##second parameter is a name which you want to name
+layer = iface.addVectorLayer(file,'',''ogr')

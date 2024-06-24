@@ -1,0 +1,7 @@
+# designate layer using file's path
+
+
+##<< specify layer >>
+fn = 'C:/Users/User/Desktop/지역분류체계/총정리/1_지역분류/copy/읍면동 행정구역 지도_1/bnd_dong_00_2000.shp'
+layer = QgsVectorLayer(fn, '', 'ogr')
+

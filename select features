@@ -1,0 +1,4 @@
+layer = iface.activeLayer()
+
+#put your expression in ' '
+layer.selectByExpression('"TOT">1500',QgsVectorLayer.SetSelection)

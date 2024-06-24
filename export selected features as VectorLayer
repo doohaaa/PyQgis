@@ -1,0 +1,8 @@
+#export selected features
+
+#write down your file path and file name like this 'C:/Users/User/myfile.shp'
+my_file=''
+
+#QgsVectorFileWriter.writeAsVectorFormat(layer,my_file,"encoding",layer.crs(),"file format", option)
+
+_writer=QgsVectorFileWriter.writeAsVectorFormat(layer,my_file,"EUC-KR",layer.crs(),"ESRI Shapefile", onlySelected=True)

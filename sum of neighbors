@@ -1,0 +1,46 @@
+from qgis.utils import iface
+from PyQt5.QtCore import QVariant
+
+# Names of the new fields to be added to the layer
+_NEW_SUM_FIELD = 'new_TOT'
+_FLAG_FIELD = 'flag'
+_NAME_FIELD = 'GRID_1K_CD'
+
+layer = iface.activeLayer()
+
+layer.startEditing()
+
+# Create a dictionary of all features
+feature_dict = {f.id(): f for f in layer.getFeatures()}
+
+flag =100
+
+for a in feature_dict.values():
+    n_neighborsum=0
+    my_list_a = str(a.attributes()[17]) 
+    my_list_a = my_list_a.split(',')
+    if (a.attributes()[14] == 0 and len(my_list_a)>1):  ##flag==0
+        print(my_list_a)
+        print(len(my_list_a))
+        print("%s 의 리스트 : %s" %(a[_NAME_FIELD], my_list_a))
+        for i in range(len(my_list_a)):  ##a의 neighbors_를 돌면서 
+            number=my_list_a[i]  ##a의 i번째 이웃
+            print("number : %s" %number)
+            number=int(number)
+            for b in feature_dict.values():
+                
+                if (b.attributes()[18]==number):
+                    print("%s의 id : %s" %(b[_NAME_FIELD],b.attributes()[18]))
+
+                    n_neighborsum= n_neighborsum + b.attributes()[2]
+                    print("tot은 : %d" %b.attributes()[2])
+                a[_NEW_SUM_FIELD]=n_neighborsum
+                
+        print("%s 의 합 : %d" %(a[_NAME_FIELD],n_neighborsum))
+        print(" ")
+        layer.updateFeature(a)
+    a[_NEW_SUM_FIELD] = n_neighborsum 
+        
+    
+##layer.commitChanges()
+print ('Processing complete.')
