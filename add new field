@@ -1,6 +1,0 @@
-from PyQt5.QtCore import QVariant
-
-layer=iface.activeLayer()
-layer_provider=layer.dataProvider()
-layer_provider.addAttributes([QgsField("new_field_name",QVariant.Int)])
-layer.updateFields()
